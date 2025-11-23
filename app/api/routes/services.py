@@ -3,6 +3,8 @@ from app.models.service import Service
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+router = APIRouter()
+
 router = APIRouter(prefix="/services", tags=["Services"])
 
 @router.get("/")
