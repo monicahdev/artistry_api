@@ -14,6 +14,9 @@ class UserCreate(BaseModel):
 class UserRead(UserBase):
     id: int
     created_at: datetime | None = None
+    
+    class Config:
+        from_attributes = True
 
 class Config:
     from_attributes = True  
