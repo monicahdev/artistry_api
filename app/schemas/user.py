@@ -20,3 +20,6 @@ class UserRead(UserBase):
 
 class Config:
     from_attributes = True  
+    
+class UserUpdate(BaseModel):
+    email: EmailStr | None = None
