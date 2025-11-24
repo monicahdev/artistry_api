@@ -20,3 +20,8 @@ class BookingRead(BookingBase):
 
     class Config:
         from_attributes = True
+        
+class BookingUpdate(BaseModel):
+    date_hour: datetime | None = None
+    comments: str | None = None
+    status: str | None = None  # only ADMIN can modify this
