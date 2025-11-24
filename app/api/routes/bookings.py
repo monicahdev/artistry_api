@@ -1,4 +1,10 @@
-from fastapi import APIRouter
+from app.dependencies import get_current_user, get_db
+from app.models.booking import Booking
+from app.models.service import Service
+from app.models.user import User
+from app.schemas.booking import BookingCreate, BookingRead
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
