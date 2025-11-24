@@ -1,3 +1,5 @@
+from typing import List
+
 from app.dependencies import get_current_user, get_db
 from app.models.booking import Booking
 from app.models.service import Service
@@ -7,6 +9,19 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+@router.get("/me", response_model=List[BookingRead])
+def list_my_bookings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    bookings = (
+        db.query(Booking)
+        .filter(Booking.user_id == current_user.id)
+        .order_by(Booking.date_hour.desc())
+        .all()
+    )
+    return bookings
 
 @router.post("/", response_model=BookingRead, status_code=status.HTTP_201_CREATED)
 def create_booking(
