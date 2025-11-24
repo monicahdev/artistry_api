@@ -20,3 +20,10 @@ class ServiceRead(ServiceBase):
 
     class Config:
         from_attributes = True
+        
+class ServiceUpdate(BaseModel):
+    service_name: str | None = None
+    description: str | None = None
+    photo: str | None = None
+    price_from: float | None = None
+    duration: int | None = None
