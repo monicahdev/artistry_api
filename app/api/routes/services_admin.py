@@ -1,5 +1,4 @@
-from app.dependencies import get_current_admin
-from app.dependencies_auth import get_current_admin, get_db
+from app.dependencies import get_current_admin, get_db
 from app.models.service import Service
 from app.models.user import User
 from fastapi import APIRouter, Depends
