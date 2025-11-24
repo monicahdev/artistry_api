@@ -4,6 +4,7 @@ from app.dependencies import get_current_admin, get_current_user
 from app.dependencies_auth import authenticate_user, create_user_token, get_db
 from app.models.user import User
 from app.schemas.user import UserRead, UserUpdate
+from app.security import get_password_hash
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -40,8 +41,8 @@ def update_me(
             detail="User not found",
         )
 
-    if user_update.email is not None:
-        user.email = user_update.email
+    if user_update.password:
+        user.password_hash = get_password_hash(user_update.password)
 
     db.add(user)
     db.commit()
