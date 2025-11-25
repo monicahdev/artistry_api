@@ -42,3 +42,16 @@ def update_online_class(
     db.commit()
     db.refresh(online_class)
     return online_class
+
+@router.delete("/{class_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_online_class(
+    class_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    online_class = db.query(OnlineClass).filter(OnlineClass.id == class_id).first()
+    if not online_class:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    db.delete(online_class)
+    db.commit()
