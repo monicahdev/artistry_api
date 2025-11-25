@@ -108,3 +108,23 @@ def update_booking(
     return booking
 
 
+@router.delete("/{booking_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_booking(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    if current_user.role != "ADMIN" and booking.user_id != current_user.id:
+        raise HTTPException(
+            status_code=403,
+            detail="Unauthorized to delete this booking",
+        )
+
+    db.delete(booking)
+    db.commit()
+    
+    return
