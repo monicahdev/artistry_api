@@ -24,3 +24,12 @@ class OnlineClassUpdate(BaseModel):
     name: str | None = None
     description: str | None = None
     url: str | None = None
+    
+class UserClassAccessRead(BaseModel):
+    id: int
+    user_id: int
+    class_id: int
+    granted_at: datetime
+
+    class Config:
+        from_attributes = True
