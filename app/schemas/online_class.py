@@ -19,3 +19,8 @@ class OnlineClassRead(OnlineClassBase):
 
     class Config:
         from_attributes = True
+
+class OnlineClassUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    url: str | None = None
