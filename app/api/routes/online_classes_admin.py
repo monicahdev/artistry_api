@@ -1,3 +1,5 @@
+from typing import List
+
 from app.dependencies import get_current_admin, get_db
 from app.models.online_class import OnlineClass
 from app.models.user import User
@@ -7,6 +9,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+@router.get("/", response_model=List[OnlineClassRead])
+def list_online_classes(db: Session = Depends(get_db)):
+    
+    classes = db.query(OnlineClass).all()
+    return classes
 
 @router.post("/", response_model=OnlineClassRead, status_code=status.HTTP_201_CREATED)
 def create_online_class(
