@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 # Security based in header Authorization: Bearer <token>
 security = HTTPBearer()
-
+optional_security = HTTPBearer(auto_error=False)
 
 def get_db():
     # get db session
@@ -63,3 +63,27 @@ async def get_current_admin(
             detail="Access denied",
         )
     return current_user
+
+async def get_current_user_optional(
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_security),
+    db: Session = Depends(get_db),
+) -> User | None:
+    
+    if credentials is None:
+        return None
+
+    token = credentials.credentials
+
+    try:
+        payload = decode_access_token(token)
+        user_id: str | None = payload.get("sub")
+        role: str | None = payload.get("role")
+        if user_id is None:
+            return None
+
+        token_data = TokenData(user_id=int(user_id), role=role)
+    except JWTError:
+        return None
+
+    user: User | None = db.query(User).filter(User.id == token_data.user_id).first()
+    return user
