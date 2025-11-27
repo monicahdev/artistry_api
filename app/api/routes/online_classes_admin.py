@@ -3,18 +3,20 @@ from typing import List
 from app.dependencies import get_current_admin, get_db
 from app.models.online_class import OnlineClass
 from app.models.user import User
+from app.models.user_class_access import UserClassAccess
 from app.schemas.online_class import (OnlineClassCreate, OnlineClassRead,
-                                      OnlineClassUpdate)
+                                      OnlineClassUpdate, UserClassAccessRead)
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 router = APIRouter()
 
 @router.get("/", response_model=List[OnlineClassRead])
-def list_online_classes(db: Session = Depends(get_db)):
-    
-    classes = db.query(OnlineClass).all()
-    return classes
+def list_online_classes_admin(
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    return db.query(OnlineClass).all()
 
 @router.post("/", response_model=OnlineClassRead, status_code=status.HTTP_201_CREATED)
 def create_online_class(
@@ -63,3 +65,45 @@ def delete_online_class(
 
     db.delete(online_class)
     db.commit()
+    
+@router.post(
+    "/{class_id}/grant-access/{user_id}",
+    response_model=UserClassAccessRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def grant_class_access(
+    class_id: int,
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(get_current_admin),
+):
+    online_class = db.query(OnlineClass).filter(OnlineClass.id == class_id).first()
+    if not online_class:
+        raise HTTPException(status_code=404, detail="Class not found")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    existing_access = (
+        db.query(UserClassAccess)
+        .filter(
+            UserClassAccess.user_id == user_id,
+            UserClassAccess.class_id == class_id,
+        )
+        .first()
+    )
+    if existing_access:
+        raise HTTPException(
+            status_code=400,
+            detail="User already has access to this class",
+        )
+
+    access = UserClassAccess(user_id=user_id, class_id=class_id)
+
+    db.add(access)
+    db.commit()
+    db.refresh(access)
+
+    return access
+
