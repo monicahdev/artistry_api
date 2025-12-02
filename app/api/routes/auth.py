@@ -5,7 +5,7 @@ from app.security import get_password_hash
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter()
 from fastapi import APIRouter
 
 router = APIRouter()
