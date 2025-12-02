@@ -1,6 +1,7 @@
+from fastapi import APIRouter
+
 from app.api.routes import (auth, bookings, classes, online_classes_admin,
                             services, services_admin, users)
-from fastapi import APIRouter
 
 router = APIRouter()
 
