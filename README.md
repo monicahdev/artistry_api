@@ -64,4 +64,4 @@ Backend REST para la plataforma profesional de maquillaje Artistry by Sara MUA, 
 
 # Licencia
 
-MIT License — uso libre con atribución.
+POR CONFIRMAR
