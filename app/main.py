@@ -11,6 +11,7 @@ app = FastAPI(
 origins = [
     "http://localhost:4200",
     "http://127.0.0.1:4200",
+    "https://artistrybysaramua.netlify.app",
 ]
 
 app.add_middleware(
