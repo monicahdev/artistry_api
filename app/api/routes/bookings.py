@@ -1,12 +1,13 @@
 from typing import List
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.dependencies import get_current_user, get_db
 from app.models.booking import Booking
 from app.models.service import Service
 from app.models.user import User
 from app.schemas.booking import BookingCreate, BookingRead, BookingUpdate
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -49,7 +50,7 @@ def create_booking(
         service_id=booking_in.service_id,
         date_hour=booking_in.date_hour,
         comments=booking_in.comments,
-        status="PENDING",
+        status="CREATED",
     )
 
     db.add(booking)
@@ -75,17 +76,18 @@ def update_booking(
         )
 
     
-    is_admin = current_user.role == "ADMIN"
+    #is_admin = current_user.role == "ADMIN"
     is_owner = booking.user_id == current_user.id
 
-    if not (is_admin or is_owner):
+    #if not (is_admin or is_owner):
+    if not (is_owner):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You don't have permission to update this booking",
         )
 
     
-    if booking_in.status is not None and not is_admin:
+    #if booking_in.status is not None and not is_admin:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only admins can change booking status",
@@ -98,7 +100,8 @@ def update_booking(
     if booking_in.comments is not None:
         booking.comments = booking_in.comments
 
-    if is_admin and booking_in.status is not None:
+    #if is_admin and booking_in.status is not None:
+    if booking_in.status is not None:
         booking.status = booking_in.status
 
     db.add(booking)
