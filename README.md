@@ -48,7 +48,7 @@ Backend REST para la plataforma profesional de maquillaje Artistry by Sara MUA, 
 
 5.  Ejecutar servidor:
 
-          uvicorn app.main:app --reload
+        uvicorn app.main:app --reload
 
 # API disponible en:
 
@@ -64,4 +64,4 @@ Backend REST para la plataforma profesional de maquillaje Artistry by Sara MUA, 
 
 # Licencia
 
-POR CONFIRMAR
+[CC BY-NC-ND 3.0 ES](https://creativecommons.org/licenses/by-nc-nd/3.0/es/)
